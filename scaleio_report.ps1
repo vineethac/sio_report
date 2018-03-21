@@ -134,7 +134,7 @@ $all_sdc = (Invoke-RestMethod -Uri "https://100.98.22.59:443/api/types/Sdc/insta
 $all_SPs = (Invoke-RestMethod -Uri "https://100.98.22.59:443/api/types/StoragePool/instances " -Method Get -Headers $ScaleIOAuthHeaders)
 $all_sds = (Invoke-RestMethod -Uri "https://100.98.22.59:443/api/types/Sds/instances " -Method Get -Headers $ScaleIOAuthHeaders)
 $all_devices = (Invoke-RestMethod -Uri "https://100.98.22.59:443/api/types/Device/instances " -Method Get -Headers $ScaleIOAuthHeaders) | select sdsId, storagePoolId, name, deviceCurrentPathName, errorState, deviceState, ssdEndOfLifeState, temperatureState, aggregatedState  | sort sdsId | ft -AutoSize
-
+$all_devices1 = (Invoke-RestMethod -Uri "https://100.98.22.59:443/api/types/Device/instances "  -Method Get -Headers $ScaleIOAuthHeaders)
 #$SP_stats = $all_SPs.id | ForEach-Object { (Invoke-RestMethod -Uri "https://100.98.22.59:443/api/instancesStoragePool::$_/relationships/Statistics " -Method Get -Headers $ScaleIOAuthHeaders) }
 
 #####final report contents section#####
