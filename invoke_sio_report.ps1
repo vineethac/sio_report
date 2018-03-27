@@ -1,3 +1,20 @@
+###########################################################################
+# Module Name  : sio_report
+# Script Name  : invoke_sio_report.ps1
+# Author       : Vineeth A.C.
+# Version      : 0.1
+# Last Modified: 27/03/2018 (ddMMyyyy)
+###########################################################################
+<#
+	.SYNOPSIS
+	The wrapper script which invokes ScaleIO REST APIs.
+
+    .EXAMPLE
+    Run the invoker script and specify ScaleIO Gateway IP
+    PS> .\invoke_sio_report.ps1 -gateway 100.98.22.59
+
+#>
+
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
