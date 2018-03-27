@@ -74,7 +74,6 @@ Begin {
         Show-Message -Message "Prerequisite - creating token"
         Show-Message -Message "Connecting to ScaleIO Gateway: $gateway"
         $Token = Invoke-RestMethod -Uri "https://$($gateway):443/api/login" -Method Get -Credential $Credentials 
-        $token
     }
     catch {
         Show-Message -Severity high -Message "Failed to create token. Quiting!"
@@ -102,7 +101,6 @@ Process {
     try {
         Show-Message -Message "Collecting MDM cluster details"
         $mdm_props = .\\api_calls\MDM_Cluster_Stats.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
-        
     }
     catch {
         Show-Message -Severity high -Message "Failed getting MDM cluster details. Quiting!"
@@ -115,10 +113,9 @@ Process {
     try {
         Show-Message -Message "Collecting overall system capacity and object details"
         $system_capacity_objects = .\\api_calls\System_Capacity_Objects.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
-        
     }
     catch {
-        Show-Message -Severity high -Message "Failed getting system capacity details. Quiting!"
+        Show-Message -Severity high -Message "Failed getting system capacity and object details. Quiting!"
         Write-VerboseLog -ErrorInfo $PSItem
         Stop-Transcript
         $PSCmdlet.ThrowTerminatingError($PSItem)
@@ -128,7 +125,6 @@ Process {
     try {
         Show-Message -Message "Collecting system alerts"
         $all_alerts = .\\api_calls\System_Alerts.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
-        
     }   
     catch {
         Show-Message -Severity high -Message "Failed collecting system alerts. Quiting!"
@@ -141,7 +137,6 @@ Process {
     try {
         Show-Message -Message "Collecting health info of disks in the cluster"
         $all_disk_health = .\\api_calls\Disk_Health.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
-        $all_disk_health
     }
     Catch {
         Show-Message -Severity high -Message "Failed collecting disk health info. Quiting!"
@@ -150,7 +145,8 @@ Process {
         $PSCmdlet.ThrowTerminatingError($PSItem)
     }
 
-    #Creating HTML output region
+    #Creating HTML fragments for output region
+    Show-Message -Message "Converting to HTML fragments"
     $mdm_obj = New-Object -TypeName psobject -Property $mdm_props
     $frag1 = $mdm_obj | ConvertTo-Html -As List -Fragment -PreContent '<h2>MDM cluster</h2>' | Out-String
 
@@ -160,8 +156,9 @@ Process {
     $frag3 = $all_alerts | ConvertTo-Html -Fragment -PreContent '<h2>Alerts</h2>' | Out-String
 
     $frag4 = $all_disk_health | ConvertTo-Html -Fragment -PreContent '<h2>Disk health</h2>' | Out-String
-    
-    # html region
+    Show-Message -Message "Converting to HTML fragments - completed"
+
+    # HTML region
     $head = @"
     <style>
     body { background-color:#bdddcc;
@@ -178,9 +175,8 @@ Process {
     table { margin-left:50px; }
     </style>
 "@
-
-    
-    #Write-Output $all_devices
-    ConvertTo-HTML -head $head -PostContent $frag1,$frag2,$frag3,$frag4 -PreContent “<h1>ScaleIO_Cluster_Report</h1>” | out-file D:\sio_daily_report.html
-
+    Show-Message -Message "Generating final HTML report file"
+    ConvertTo-HTML -head $head -PostContent $frag1,$frag2,$frag3,$frag4 -PreContent “<h1>ScaleIO_Cluster_Report</h1>`n<h5>Generated_on:$((Get-Date).DateTime)</h5>” | out-file C:\sio_daily_report.html
+    Show-Message -Message "Generating final HTML report file - completed"
+    Show-Message -Message "Report saved at C:\sio_daily_report.html"
 }
