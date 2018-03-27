@@ -9,9 +9,9 @@
 	.SYNOPSIS
 	The wrapper script which invokes ScaleIO REST APIs.
 
-    .EXAMPLE
-    Run the invoker script and specify ScaleIO Gateway IP
-    PS> .\invoke_sio_report.ps1 -gateway 100.98.22.59
+    	.EXAMPLE
+    	Run the invoker script and specify ScaleIO Gateway IP
+    	PS> .\invoke_sio_report.ps1 -gateway 100.98.22.59
 
 #>
 
