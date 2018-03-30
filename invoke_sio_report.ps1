@@ -24,8 +24,7 @@ param(
 Begin {
     $LibFolder = "$PSScriptRoot\Lib"
     $LogFolder = "$PSScriptRoot\logs"
-    $api_calls_folder = "$PSScriptRoot\api_calls"
-
+    
     try{
         Import-Module $LibFolder\helpers\helpers.psm1 -Force  -ErrorAction Stop
         Show-Message -Message "[Region] Prerequisite - helpers loaded."
