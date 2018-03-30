@@ -9,9 +9,9 @@
 	.SYNOPSIS
 	The wrapper script which invokes ScaleIO REST APIs.
 
-    	.EXAMPLE
-    	Run the invoker script and specify ScaleIO Gateway IP
-    	PS> .\invoke_sio_report.ps1 -gateway 100.98.22.59
+    .EXAMPLE
+    Run the invoker script and specify ScaleIO Gateway IP
+    PS> .\invoke_sio_report.ps1 -gateway 100.98.22.59
 
 #>
 
@@ -29,6 +29,7 @@ Begin {
     try{
         Import-Module $LibFolder\helpers\helpers.psm1 -Force  -ErrorAction Stop
         Show-Message -Message "[Region] Prerequisite - helpers loaded."
+        Import-Module $LibFolder\helpers\scaleio_ams_restapis.psm1 -Force -ErrorAction Stop
     }
     catch {
         Show-Message -Severity high -Message "[EndRegion] Failed - Prerequisite of loading modules"
@@ -117,7 +118,7 @@ Process {
     #MDM cluster info
     try {
         Show-Message -Message "Collecting MDM cluster details"
-        $mdm_props = .\\api_calls\MDM_Cluster_Stats.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
+        $mdm_props = MDM_Cluster_Stats -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
     }
     catch {
         Show-Message -Severity high -Message "Failed getting MDM cluster details. Quiting!"
@@ -129,7 +130,7 @@ Process {
     #System overall capacity and objects
     try {
         Show-Message -Message "Collecting overall system capacity and object details"
-        $system_capacity_objects = .\\api_calls\System_Capacity_Objects.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
+        $system_capacity_objects = System_Capacity_Objects -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
     }
     catch {
         Show-Message -Severity high -Message "Failed getting system capacity and object details. Quiting!"
@@ -141,7 +142,7 @@ Process {
     #System alerts
     try {
         Show-Message -Message "Collecting system alerts"
-        $all_alerts = .\\api_calls\System_Alerts.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
+        $all_alerts = System_Alerts -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
     }   
     catch {
         Show-Message -Severity high -Message "Failed collecting system alerts. Quiting!"
@@ -153,7 +154,7 @@ Process {
     #Health status of all disks in the cluster
     try {
         Show-Message -Message "Collecting health info of disks in the cluster"
-        $all_disk_health = .\\api_calls\Disk_Health.ps1 -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
+        $all_disk_health = Disk_Health -gateway $gateway -ScaleIOAuthHeaders $ScaleIOAuthHeaders
     }
     Catch {
         Show-Message -Severity high -Message "Failed collecting disk health info. Quiting!"
@@ -161,6 +162,9 @@ Process {
         Stop-Transcript
         $PSCmdlet.ThrowTerminatingError($PSItem)
     }
+}
+
+End {
 
     #Creating HTML fragments for output region
     Show-Message -Message "Converting to HTML fragments"
