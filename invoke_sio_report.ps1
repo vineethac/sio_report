@@ -6,11 +6,11 @@
 # Last Modified: 27/03/2018 (ddMMyyyy)
 ###########################################################################
 <#
-	.SYNOPSIS
-	The wrapper script which invokes ScaleIO REST APIs.
+	    .SYNOPSIS
+	    The wrapper script which invokes ScaleIO REST APIs.
 
     	.EXAMPLE
-    	Run the invoker script and specify ScaleIO Gateway IP
+    	Run the invoker script, specify ScaleIO AMS Gateway IP and provide creds
     	PS> .\invoke_sio_report.ps1 -gateway 100.98.22.59
 
 #>
